@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class CollectionController extends Controller
 {
@@ -35,6 +36,18 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'namaKoleksi'                  =>['required', 'string', 'max:255'],
+            'jenisKoleksi'                  =>['required', 'string', 'max:255'],
+            'jumlahKoleksi'                  =>['required', 'string', 'max:255'],
+        ]);
+
+        $collection = Collection::create([
+            'namaKoleksi'  => $request->namaKoleksi,
+            'jenisKoleksi'  => $request->jenisKoleksi,
+            'jumlahKoleksi'  => $request->jumlahKoleksi,
+        ]);
+
         return view('koleksi.daftarKoleksi');
     }
 
@@ -60,6 +73,34 @@ class CollectionController extends Controller
         return view('koleksi.infoKoleksi');
     }
 
+    public function getAllCollections(){
+        $collection = DB::table('collections')
+        ->select(
+            'id as id',
+            'namaKoleksi as judul',
+            DB::raw('
+                (CASE
+                WHEN jenisKoleksi = "1" THEN "BUKU"
+                WHEN jenisKoleksi = "2" THEN "Majalah"
+                WHEN jenisKoleksi = "3" THEN "Cakram Digital"
+                END) AS jenisKoleksi
+            '),
+            'jumlahKoleksi as jumlahKoleksi'
+        )
+        ->orderBy('namaKoleksi', 'asc')
+        ->get();
+
+        return DataTables::of($collection)
+        ->addColumn('action', function ($collection){
+           $html = '
+           <button data-rowid="" class = "btn btn-xs btn-light" data-toggle="tooltip" data-placement = "top"
+                data-container="body" title="Edit Koleksi" onclick = "infoKoleksi('."'".$collection->id."'".')"
+           ';
+
+           return $html;
+        })
+        ->make(true);
+    }
     /**
      * Update the specified resource in storage.
      *

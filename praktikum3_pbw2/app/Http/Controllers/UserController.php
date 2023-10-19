@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -35,6 +37,31 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
+        $request->validate([
+            'username'                  =>['required', 'string', 'max:255', 'unique:users'],
+            'fullname'                  =>['required', 'string', 'max:255'],
+            'email'                     =>['email'],
+            'password'                  =>['required', 'confirmed', Rules\Password::defaults()],
+            'address'                   =>['required', 'string'],
+            'birthdate'                 =>['required', 'date', 'before:today'],
+            'phoneNumber'               =>['required']
+        ],
+        [
+            'username.required'         => 'Username harus diisi',
+            'username.unique'           => 'Username telah digunakan',
+            'birthdate.before'          => 'Tanggal lahir harus sebelum hari ini'
+        ]);
+
+        $user = User::create([
+            'username'  => $request->username,
+            'fullname'  => $request->fullname,
+            'email'  => $request->email,
+            'password'  => Hash::make($request->password),
+            'address'  => $request->address,
+            'birthdate'  => $request->birthdate,
+            'phonenumber'  => $request->phoneNumber,
+        ]);
         return view('user.daftarPengguna');
     }
 

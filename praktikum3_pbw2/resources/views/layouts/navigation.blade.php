@@ -16,8 +16,28 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('user')" :active="request()->routeIs('user')">
+                        {{ __('Daftar Pengguna') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('userRegistration')" :active="request()->routeIs('userRegistration')">
+                        {{ __('Registrasi Pengguna') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('koleksi')" :active="request()->routeIs('koleksi')">
+                        {{ __('Daftar Koleksi') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('tambahKoleksi')" :active="request()->routeIs('tambahKoleksi')">
+                        {{ __('Tambah Koleksi') }}
+                    </x-nav-link>
+                </div>
             </div>
-
+            
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
